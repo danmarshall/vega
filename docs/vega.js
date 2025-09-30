@@ -34486,6 +34486,8 @@
       // base64 encode/decode
       btoa: 'btoa',
       atob: 'atob',
+      // URI encoding
+      encodeUriComponent: 'encodeURIComponent',
       // REGEXP functions
       regexp: REGEXP,
       test: fn('test', REGEXP),
@@ -34511,6 +34513,8 @@
       globalvar = opt.globalvar,
       fieldvar = opt.fieldvar,
       outputGlobal = isFunction(globalvar) ? globalvar : id => `${globalvar}["${id}"]`;
+    // JSON authors are not allowed to set properties with these names, as these are built-in to the JS Object Prototype.
+    new Set([...Object.getOwnPropertyNames(Object.prototype).filter(name => typeof Object.prototype[name] === 'function'), '__proto__']);
     let globals = {},
       fields = {},
       memberDepth = 0;
