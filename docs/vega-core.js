@@ -22554,8 +22554,6 @@
       // base64 encode/decode
       btoa: 'btoa',
       atob: 'atob',
-      // URI encoding
-      encodeUriComponent: 'encodeURIComponent',
       // REGEXP functions
       regexp: REGEXP,
       test: fn('test', REGEXP),
