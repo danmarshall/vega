@@ -82,6 +82,8 @@ export default {
   btoa:         x => btoa(x),
   // Convert base64-encoded ascii to binary string
   atob:         x => atob(x),
+  // URI encoding
+  encodeUriComponent: x => encodeURIComponent(x),
 
   // regexp functions
   regexp:       RegExp,
