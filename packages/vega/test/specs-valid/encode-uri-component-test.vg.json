@@ -12,7 +12,7 @@
       "name": "data_0",
       "source": "source_0",
       "transform": [
-        {"type": "formula", "expr": "encodeUriComponent(datum.a)", "as": "encoded"}
+        {"type": "formula", "expr": "encodeURIComponent(datum.a)", "as": "encoded"}
       ]
     }
   ],
