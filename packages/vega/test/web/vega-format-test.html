@@ -54,10 +54,18 @@
       function addResult(name, passed, details) {
         const div = document.createElement('div');
         div.className = 'test-result ' + (passed ? 'pass' : 'fail');
-        div.innerHTML = `<strong>${passed ? '✓' : '✗'} ${name}</strong>`;
+        
+        const strong = document.createElement('strong');
+        strong.textContent = (passed ? '✓' : '✗') + ' ' + name;
+        div.appendChild(strong);
+        
         if (details) {
-          div.innerHTML += `<br><code>${details}</code>`;
+          div.appendChild(document.createElement('br'));
+          const code = document.createElement('code');
+          code.textContent = details;
+          div.appendChild(code);
         }
+        
         results.appendChild(div);
         return passed;
       }
