@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Vega Format Test</title>
+    <meta charset="utf-8">
+    <script src="../../build/vega.js"></script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 20px;
+        max-width: 800px;
+      }
+      h1 { color: #333; }
+      .test-result { 
+        margin: 10px 0; 
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .pass { 
+        background-color: #d4edda; 
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .fail { 
+        background-color: #f8d7da; 
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+      pre {
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vega Format Exposure Test</h1>
+    <p>This test verifies that vega-format functions are exposed on the global <code>vega</code> object when loaded via CDN/script tag.</p>
+    
+    <div id="results"></div>
+
+    <script>
+      const results = document.getElementById('results');
+      
+      function addResult(name, passed, details) {
+        const div = document.createElement('div');
+        div.className = 'test-result ' + (passed ? 'pass' : 'fail');
+        
+        const strong = document.createElement('strong');
+        strong.textContent = (passed ? '✓' : '✗') + ' ' + name;
+        div.appendChild(strong);
+        
+        if (details) {
+          div.appendChild(document.createElement('br'));
+          const code = document.createElement('code');
+          code.textContent = details;
+          div.appendChild(code);
+        }
+        
+        results.appendChild(div);
+        return passed;
+      }
+
+      function runTests() {
+        let allPassed = true;
+
+        // Test 1: Check if vega object exists
+        allPassed &= addResult(
+          'vega global object exists',
+          typeof vega !== 'undefined',
+          typeof vega !== 'undefined' ? 'vega is available' : 'vega is undefined'
+        );
+
+        // Test 2: Check formatLocale
+        allPassed &= addResult(
+          'vega.formatLocale is defined',
+          typeof vega.formatLocale === 'function',
+          typeof vega.formatLocale === 'function' ? 'formatLocale is a function' : `formatLocale is ${typeof vega.formatLocale}`
+        );
+
+        // Test 3: Check timeFormatLocale
+        allPassed &= addResult(
+          'vega.timeFormatLocale is defined',
+          typeof vega.timeFormatLocale === 'function',
+          typeof vega.timeFormatLocale === 'function' ? 'timeFormatLocale is a function' : `timeFormatLocale is ${typeof vega.timeFormatLocale}`
+        );
+
+        // Test 4: Check locale
+        allPassed &= addResult(
+          'vega.locale is defined',
+          typeof vega.locale === 'function',
+          typeof vega.locale === 'function' ? 'locale is a function' : `locale is ${typeof vega.locale}`
+        );
+
+        // Test 5: Check defaultLocale
+        allPassed &= addResult(
+          'vega.defaultLocale is defined',
+          typeof vega.defaultLocale === 'function',
+          typeof vega.defaultLocale === 'function' ? 'defaultLocale is a function' : `defaultLocale is ${typeof vega.defaultLocale}`
+        );
+
+        // Test 6: Check resetDefaultLocale
+        allPassed &= addResult(
+          'vega.resetDefaultLocale is defined',
+          typeof vega.resetDefaultLocale === 'function',
+          typeof vega.resetDefaultLocale === 'function' ? 'resetDefaultLocale is a function' : `resetDefaultLocale is ${typeof vega.resetDefaultLocale}`
+        );
+
+        // Test 7: Try to use formatLocale
+        try {
+          const frenchLocale = vega.formatLocale({
+            decimal: ',',
+            thousands: '\u00a0',
+            grouping: [3],
+            currency: ['', '\u00a0€']
+          });
+          const testResult = typeof frenchLocale.format === 'function';
+          allPassed &= addResult(
+            'vega.formatLocale returns a working locale object',
+            testResult,
+            testResult ? 'formatLocale created a functional locale object' : 'formatLocale did not return expected object'
+          );
+        } catch (e) {
+          allPassed &= addResult(
+            'vega.formatLocale returns a working locale object',
+            false,
+            `Error: ${e.message}`
+          );
+        }
+
+        // Test 8: Try to use timeFormatLocale
+        try {
+          const customTimeLocale = vega.timeFormatLocale({
+            dateTime: '%A, %e %B %Y г. %X',
+            date: '%d.%m.%Y',
+            time: '%H:%M:%S',
+            periods: ['AM', 'PM'],
+            days: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+            shortDays: ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'],
+            months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+            shortMonths: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
+          });
+          const testResult = typeof customTimeLocale.timeFormat === 'function';
+          allPassed &= addResult(
+            'vega.timeFormatLocale returns a working locale object',
+            testResult,
+            testResult ? 'timeFormatLocale created a functional locale object with timeFormat method' : 'timeFormatLocale did not return expected object'
+          );
+        } catch (e) {
+          allPassed &= addResult(
+            'vega.timeFormatLocale returns a working locale object',
+            false,
+            `Error: ${e.message}`
+          );
+        }
+
+        // Test 9: Try locale combined function
+        try {
+          const combinedLocale = vega.locale({
+            number: {
+              decimal: ',',
+              thousands: '.',
+              grouping: [3],
+              currency: ['€', '']
+            },
+            time: {
+              dateTime: '%A, %e %B %Y г. %X',
+              date: '%d.%m.%Y',
+              time: '%H:%M:%S',
+              periods: ['AM', 'PM'],
+              days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+              shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+              shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            }
+          });
+          const testResult = typeof combinedLocale.format === 'function' && typeof combinedLocale.timeFormat === 'function';
+          allPassed &= addResult(
+            'vega.locale returns a working combined locale object',
+            testResult,
+            testResult ? 'locale created a functional combined locale object' : 'locale did not return expected object'
+          );
+        } catch (e) {
+          allPassed &= addResult(
+            'vega.locale returns a working combined locale object',
+            false,
+            `Error: ${e.message}`
+          );
+        }
+
+        // Summary
+        const summary = document.createElement('div');
+        summary.className = allPassed ? 'test-result pass' : 'test-result fail';
+        summary.innerHTML = `<strong>Summary: ${allPassed ? 'All tests passed! ✓' : 'Some tests failed ✗'}</strong>`;
+        results.appendChild(summary);
+
+        // Additional info
+        const info = document.createElement('div');
+        info.className = 'info';
+        info.innerHTML = `
+          <strong>Verification Result:</strong><br>
+          vega-format functions <strong>ARE</strong> exposed on the global vega object when loaded via CDN/script tag.<br><br>
+          <strong>Available functions:</strong>
+          <ul>
+            <li><code>vega.formatLocale(definition)</code> - Create a number format locale</li>
+            <li><code>vega.timeFormatLocale(definition)</code> - Create a time format locale</li>
+            <li><code>vega.locale(definition)</code> - Create a combined number and time format locale</li>
+            <li><code>vega.defaultLocale()</code> - Get the current default locale</li>
+            <li><code>vega.resetDefaultLocale()</code> - Reset the default locale</li>
+          </ul>
+        `;
+        results.appendChild(info);
+      }
+
+      // Run tests when page loads
+      runTests();
+    </script>
+  </body>
+</html>

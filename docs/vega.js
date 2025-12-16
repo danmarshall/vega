@@ -30,18 +30,32 @@
       return obj;
     };
   };
+
+  /** @param {string} message */
   function error(message) {
     throw Error(message);
   }
+
+  /**
+   * Splits an access path string into its component parts.
+   * Handles dot notation, bracket notation, and quoted strings.
+   *
+   * @param {string} p - The access path string to split
+   * @returns {string[]} An array of path components
+   */
   function splitAccessPath(p) {
+    /** @type {string[]} */
     const path = [],
       n = p.length;
     let q = null,
       b = 0,
-      s = '',
-      i,
-      j,
-      c;
+      s = '';
+    /** @type {number} */
+    let i;
+    /** @type {number} */
+    let j;
+    /** @type {string} */
+    let c;
     p = p + '';
     function push() {
       path.push(s + p.substring(i, j));
@@ -143,7 +157,16 @@
       }
     };
   }
-  var isArray = Array.isArray;
+
+  /**
+   * Return whether the provided value is an array.
+   * @template T
+   * @param {unknown} value
+   * @returns {value is readonly T[]}
+   */
+  const isArray = Array.isArray;
+
+  /** @param {unknown} _ */
   function isObject(_) {
     return _ === Object(_);
   }
@@ -278,8 +301,14 @@
     span = hi - lo;
     return span >= max - min ? [min, max] : [lo = Math.min(Math.max(lo, min), max - span), lo + span];
   }
-  function isFunction(_) {
-    return typeof _ === 'function';
+
+  /**
+   * Verify that the value is a function-like object.
+   * @param {unknown} value
+   * @returns {value is Function}
+   */
+  function isFunction(value) {
+    return typeof value === 'function';
   }
   const DESCENDING = 'descending';
   function compare$1(fields, orders, opt) {
@@ -551,21 +580,53 @@
     right = right === undefined || right;
     return (left ? r0 <= value : r0 < value) && (right ? value <= r1 : value < r1);
   }
-  function isBoolean$1(_) {
-    return typeof _ === 'boolean';
+
+  /**
+   * Determine if the value is a boolean primitive.
+   * @param {unknown} value
+   * @returns {value is boolean}
+   */
+  function isBoolean$1(value) {
+    return typeof value === 'boolean';
   }
-  function isDate$1(_) {
-    return Object.prototype.toString.call(_) === '[object Date]';
+
+  /**
+   * Check if the value is an actual Date object.
+   * @param {unknown} value
+   * @returns {value is Date}
+   */
+  function isDate$1(value) {
+    return Object.prototype.toString.call(value) === '[object Date]';
   }
-  function isIterable(_) {
-    return _ && isFunction(_[Symbol.iterator]);
+
+  /**
+   * Test if the value exposes the iterator protocol via `Symbol.iterator`.
+   * @param {{ [Symbol.iterator]?: unknown } | null | undefined} value
+   * @returns {boolean}
+   */
+  function isIterable(value) {
+    return value != null && isFunction(value[Symbol.iterator]);
   }
-  function isNumber$1(_) {
-    return typeof _ === 'number';
+
+  /**
+   * Identify if the value is a number primitive.
+   * @param {unknown} value
+   * @returns {value is number}
+   */
+  function isNumber$1(value) {
+    return typeof value === 'number';
   }
-  function isRegExp(_) {
-    return Object.prototype.toString.call(_) === '[object RegExp]';
+
+  /**
+   * Confirm whether the value is a `RegExp` object.
+   * @param {unknown} value
+   * @returns {value is RegExp}
+   */
+  function isRegExp(value) {
+    return Object.prototype.toString.call(value) === '[object RegExp]';
   }
+
+  /** @param {unknown} _ */
   function isString(_) {
     return typeof _ === 'string';
   }
@@ -650,11 +711,27 @@
     }
     return merged;
   }
+
+  /**
+   * Repeat a string a specified number of times.
+   * @param {string} str - The string to repeat
+   * @param {number} reps - The number of times to repeat the string
+   * @returns {string} The repeated string
+   */
   function repeat(str, reps) {
     let s = '';
     while (--reps >= 0) s += str;
     return s;
   }
+
+  /**
+   * Pads a string to a specified length with a padding character.
+   * @param {string} str - string to pad.
+   * @param {number} length - target length of padded string.
+   * @param {string} [padchar=' '] - character to use for padding.
+   * @param {'left'|'center'|'right'} [align='right'] - The alignment of the original string ('left' for left-align, 'center' for center-align, 'right' for right-align).
+   * @returns {string} The padded string.
+   */
   function pad$2(str, length, padchar, align) {
     const c = padchar || ' ',
       s = str + '',
@@ -669,6 +746,15 @@
   function span(array) {
     return array && peek$1(array) - array[0] || 0;
   }
+
+  /**
+   * Converts a value to its string representation.
+   * Arrays are formatted as comma-separated values in brackets.
+   * Objects and strings are converted to JSON format with Unicode line/paragraph
+   * separator characters properly escaped for JavaScript compatibility.
+   * @param {*} x - The value to convert to a string
+   * @returns {string} The string representation of the input value
+   */
   function $(x) {
     return isArray(x) ? `[${x.map(v => v === null ? 'null' : $(v))}]` : isObject(x) || isString(x) ?
     // Output valid JSON and JS source strings.
@@ -692,6 +778,15 @@
     for (let i = 0; i < n; ++i) s[_[i]] = true;
     return s;
   }
+
+  /**
+   * Truncate a string to a specified length with an optional ellipsis.
+   * @param {string} str - The string to truncate
+   * @param {number} length - The maximum length of the truncated string
+   * @param {'left' | 'center'} [align] - The alignment of the ellipsis (defaults to right-aligned)
+   * @param {string} [ellipsis] - The ellipsis string to use (defaults to '…')
+   * @returns {string} The truncated string
+   */
   function truncate$1(str, length, align, ellipsis) {
     const e = ellipsis != null ? ellipsis : '\u2026',
       s = str + '',
@@ -5583,7 +5678,7 @@
      */
     warn: logMethod('warn'),
     /**
-     * Logs a information message. By default, logged messages are written to
+     * Logs an information message. By default, logged messages are written to
      * console output. The message will only be logged if the current log level is
      * high enough to permit information messages.
      */
@@ -10536,11 +10631,22 @@
       state.update(w, data[i]);
     }
   }
+  function clamp$1(x, lo, hi) {
+    return x < lo ? lo : x > hi ? hi : x;
+  }
   function setWindow(w, f, i, n) {
     w.p0 = w.i0;
     w.p1 = w.i1;
-    w.i0 = f[0] == null ? 0 : Math.max(0, i - Math.abs(f[0]));
-    w.i1 = f[1] == null ? n : Math.min(n, i + Math.abs(f[1]) + 1);
+
+    // f[0]: start offset (inclusive). null => unbounded (0)
+    // Use the SIGNED offset relative to i.
+    const start = f[0] == null ? 0 : i + f[0];
+
+    // f[1]: end offset (inclusive in “row terms”), so we +1 for exclusive bound.
+    // null => unbounded (n)
+    const endExclusive = f[1] == null ? n : i + f[1] + 1;
+    w.i0 = clamp$1(start, 0, n);
+    w.i1 = clamp$1(endExclusive, 0, n);
     w.index = i;
   }
 
@@ -34486,6 +34592,8 @@
       // base64 encode/decode
       btoa: 'btoa',
       atob: 'atob',
+      // URI encoding
+      encodeURIComponent: 'encodeURIComponent',
       // REGEXP functions
       regexp: REGEXP,
       test: fn('test', REGEXP),
@@ -34511,8 +34619,6 @@
       globalvar = opt.globalvar,
       fieldvar = opt.fieldvar,
       outputGlobal = isFunction(globalvar) ? globalvar : id => `${globalvar}["${id}"]`;
-    // JSON authors are not allowed to set properties with these names, as these are built-in to the JS Object Prototype.
-    new Set([...Object.getOwnPropertyNames(Object.prototype).filter(name => typeof Object.prototype[name] === 'function'), '__proto__']);
     let globals = {},
       fields = {},
       memberDepth = 0;
@@ -34754,12 +34860,18 @@
 
   /**
    * Maps an array of scene graph items to an array of selection tuples.
-   * @param {string} name  - The name of the dataset representing the selection.
-   * @param {string} base  - The base object that generated tuples extend.
+   * @param {array} array - Input scene graph items
+   * @param {object} base - The base object that generated tuples extend.
    *
    * @returns {array} An array of selection entries for the given unit.
    */
   function selectionTuples(array, base) {
+    if (!isArray(array)) {
+      error('First argument to selectionTuples must be an array.');
+    }
+    if (!isObject(base)) {
+      error('Second argument to selectionTuples must be an object.');
+    }
     return array.map(x => extend$1(base.fields ? {
       values: base.fields.map(f => getter(f)(x.datum))
     } : {
@@ -38065,7 +38177,13 @@
     return !isObject(sort) ? '' : (sort.order === Descending ? '-' : '+') + aggrField(sort.op, sort.field);
   }
   function aggrField(op, field) {
-    return (op && op.signal ? '$' + op.signal : op || '') + (op && field ? '_' : '') + (field && field.signal ? '$' + field.signal : field || '');
+    return (op && op.signal ? '$' + op.signal : op || '') + (op && field ? '_' : '') + (field && field.signal ? '$' + field.signal
+    // Replace non-alphanumeric character sequences with underscores and trim leading/trailing underscores
+    // to prevent incorrect path extraction for nested target fields or target fields with (escaped) dots. 
+    // Example: 'a\\.b[c.d]' => 'a_b_c_d'. 
+    // Note: aggregating both a nested field and a field with a dot could lead to conflicting names: 
+    // with data like [{ a: {b: 1}, 'a.b': 1 }], summing 'a.b' and 'a\\.b' would both result in a field 'sum_a_b'   
+    : field?.replace(/\W+/g, '_').replace(/^_+|_+$/g, '') || '');
   }
 
   // -----
