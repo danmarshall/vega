@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Vega Default Locale Demo</title>
+    <meta charset="utf-8">
+    <script src="../../build/vega.js"></script>
+    <style>
+      body { 
+        font-family: Arial, sans-serif; 
+        margin: 20px;
+        max-width: 900px;
+      }
+      h1 { color: #333; }
+      .demo-section {
+        background-color: #f5f5f5;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        border-left: 4px solid #4CAF50;
+      }
+      .code-block {
+        background-color: #282c34;
+        color: #abb2bf;
+        padding: 12px;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 10px 0;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+      }
+      .output {
+        background-color: #e8f5e9;
+        padding: 10px;
+        border-radius: 4px;
+        margin: 10px 0;
+        border-left: 3px solid #4CAF50;
+      }
+      .keyword { color: #c678dd; }
+      .function { color: #61afef; }
+      .string { color: #98c379; }
+      .comment { color: #5c6370; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <h1>Accessing Vega's Default Locale</h1>
+    <p>This demo shows how to access the existing default locale (US English) without creating a custom one.</p>
+
+    <div class="demo-section">
+      <h2>1. Default Number Formatting</h2>
+      <div class="code-block">
+<span class="comment">// Get the default number format locale (no arguments)</span>
+<span class="keyword">const</span> defaultNumberLocale = vega.<span class="function">formatLocale</span>();
+<span class="keyword">const</span> numberFormatter = defaultNumberLocale.<span class="function">format</span>(<span class="string">'$,.2f'</span>);
+<span class="function">console.log</span>(numberFormatter(<span class="string">1234.56</span>));
+      </div>
+      <div class="output" id="output1"></div>
+    </div>
+
+    <div class="demo-section">
+      <h2>2. Default Time Formatting</h2>
+      <div class="code-block">
+<span class="comment">// Get the default time format locale (no arguments)</span>
+<span class="keyword">const</span> defaultTimeLocale = vega.<span class="function">timeFormatLocale</span>();
+<span class="keyword">const</span> timeFormatter = defaultTimeLocale.<span class="function">timeFormat</span>(<span class="string">'%A, %B %e, %Y'</span>);
+<span class="function">console.log</span>(timeFormatter(<span class="keyword">new</span> <span class="function">Date</span>()));
+      </div>
+      <div class="output" id="output2"></div>
+    </div>
+
+    <div class="demo-section">
+      <h2>3. Combined Default Locale</h2>
+      <div class="code-block">
+<span class="comment">// Get the combined default locale (no arguments)</span>
+<span class="keyword">const</span> defaultLocale = vega.<span class="function">defaultLocale</span>();
+<span class="keyword">const</span> combinedFormatter = defaultLocale.<span class="function">format</span>(<span class="string">',.2f'</span>);
+<span class="function">console.log</span>(combinedFormatter(<span class="string">9876.54</span>));
+      </div>
+      <div class="output" id="output3"></div>
+    </div>
+
+    <div class="demo-section">
+      <h2>4. More Number Format Examples</h2>
+      <div class="code-block">
+<span class="keyword">const</span> locale = vega.<span class="function">formatLocale</span>();
+<span class="function">console.log</span>(locale.<span class="function">format</span>(<span class="string">'.0%'</span>)(<span class="string">0.123</span>));  <span class="comment">// Percentage</span>
+<span class="function">console.log</span>(locale.<span class="function">format</span>(<span class="string">',.0f'</span>)(<span class="string">1234567</span>));  <span class="comment">// Thousands separator</span>
+<span class="function">console.log</span>(locale.<span class="function">format</span>(<span class="string">'.3s'</span>)(<span class="string">1500000</span>));  <span class="comment">// SI prefix</span>
+      </div>
+      <div class="output" id="output4"></div>
+    </div>
+
+    <div class="demo-section">
+      <h2>5. More Time Format Examples</h2>
+      <div class="code-block">
+<span class="keyword">const</span> locale = vega.<span class="function">timeFormatLocale</span>();
+<span class="keyword">const</span> now = <span class="keyword">new</span> <span class="function">Date</span>();
+<span class="function">console.log</span>(locale.<span class="function">timeFormat</span>(<span class="string">'%Y-%m-%d'</span>)(now));  <span class="comment">// ISO date</span>
+<span class="function">console.log</span>(locale.<span class="function">timeFormat</span>(<span class="string">'%I:%M %p'</span>)(now));  <span class="comment">// 12-hour time</span>
+<span class="function">console.log</span>(locale.<span class="function">timeFormat</span>(<span class="string">'%B %Y'</span>)(now));  <span class="comment">// Month and year</span>
+      </div>
+      <div class="output" id="output5"></div>
+    </div>
+
+    <script>
+      // Demo 1: Number formatting
+      const defaultNumberLocale = vega.formatLocale();
+      const numberFormatter = defaultNumberLocale.format('$,.2f');
+      document.getElementById('output1').innerHTML = 
+        '<strong>Result:</strong> ' + numberFormatter(1234.56);
+
+      // Demo 2: Time formatting
+      const defaultTimeLocale = vega.timeFormatLocale();
+      const timeFormatter = defaultTimeLocale.timeFormat('%A, %B %e, %Y');
+      document.getElementById('output2').innerHTML = 
+        '<strong>Result:</strong> ' + timeFormatter(new Date());
+
+      // Demo 3: Combined locale
+      const defaultLocale = vega.defaultLocale();
+      const combinedFormatter = defaultLocale.format(',.2f');
+      document.getElementById('output3').innerHTML = 
+        '<strong>Result:</strong> ' + combinedFormatter(9876.54);
+
+      // Demo 4: More number formats
+      const locale1 = vega.formatLocale();
+      const results4 = [
+        locale1.format('.0%')(0.123) + ' (percentage)',
+        locale1.format(',.0f')(1234567) + ' (thousands separator)',
+        locale1.format('.3s')(1500000) + ' (SI prefix)'
+      ];
+      document.getElementById('output4').innerHTML = 
+        '<strong>Results:</strong><br>' + results4.join('<br>');
+
+      // Demo 5: More time formats
+      const locale2 = vega.timeFormatLocale();
+      const now = new Date();
+      const results5 = [
+        locale2.timeFormat('%Y-%m-%d')(now) + ' (ISO date)',
+        locale2.timeFormat('%I:%M %p')(now) + ' (12-hour time)',
+        locale2.timeFormat('%B %Y')(now) + ' (month and year)'
+      ];
+      document.getElementById('output5').innerHTML = 
+        '<strong>Results:</strong><br>' + results5.join('<br>');
+    </script>
+  </body>
+</html>

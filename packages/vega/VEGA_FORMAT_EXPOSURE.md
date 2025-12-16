@@ -9,23 +9,27 @@
 The following vega-format functions are available on the global `vega` object:
 
 ### Number Format Functions
+- **`vega.formatLocale()`** - Gets the default (US English) number format locale
 - **`vega.formatLocale(definition)`** - Creates a custom number format locale
   - Exported from `vega-format` as `numberFormatDefaultLocale`
   - Returns an object with a `format` method for creating number formatters
 
 ### Time Format Functions  
+- **`vega.timeFormatLocale()`** - Gets the default (US English) time format locale
 - **`vega.timeFormatLocale(definition)`** - Creates a custom time format locale
   - Exported from `vega-format` as `timeFormatDefaultLocale`
   - Returns an object with `timeFormat`, `utcFormat`, `timeParse`, and `utcParse` methods
 
 ### Combined Locale Functions
-- **`vega.locale(definition)`** - Creates a combined number and time format locale
-  - Accepts an object with `number` and `time` properties
+- **`vega.locale()`** - Gets the default (US English) combined locale
+- **`vega.locale(numberDef, timeDef)`** - Creates a combined number and time format locale
+  - Accepts number and time definition objects
   - Returns an object with both number and time formatting methods
 
 ### Default Locale Management
-- **`vega.defaultLocale()`** - Gets the current default locale
-- **`vega.resetDefaultLocale()`** - Resets to the default locale
+- **`vega.defaultLocale()`** - Gets the current default combined locale
+- **`vega.defaultLocale(numberDef, timeDef)`** - Sets and returns a new default locale
+- **`vega.resetDefaultLocale()`** - Resets to the built-in default locale (US English)
 
 ## Verification
 
@@ -68,6 +72,41 @@ To run the test:
 3. Open `test/web/vega-format-test.html` in a browser
 
 ## Example Usage
+
+### Accessing the Default Locale
+
+To access the existing default locale (US English), call the functions with **no arguments**:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@6/build/vega.min.js"></script>
+</head>
+<body>
+  <script>
+    // Get the default number format locale
+    const defaultNumberLocale = vega.formatLocale();
+    const numberFormatter = defaultNumberLocale.format('$,.2f');
+    console.log(numberFormatter(1234.56)); // "$1,234.56"
+    
+    // Get the default time format locale
+    const defaultTimeLocale = vega.timeFormatLocale();
+    const timeFormatter = defaultTimeLocale.timeFormat('%A, %B %e, %Y');
+    console.log(timeFormatter(new Date())); // e.g., "Monday, December 15, 2025"
+    
+    // Get the combined default locale (both number and time)
+    const defaultLocale = vega.defaultLocale();
+    const combinedFormatter = defaultLocale.format(',.2f');
+    console.log(combinedFormatter(9876.54)); // "9,876.54"
+  </script>
+</body>
+</html>
+```
+
+### Creating Custom Locales
+
+To create a custom locale, pass a definition object:
 
 ```html
 <!DOCTYPE html>
